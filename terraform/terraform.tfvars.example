@@ -1,0 +1,4 @@
+aws_region           = "us-east-1"
+environment          = "dev"
+cep_api_url          = "https://cep.awesomeapi.com.br/json/01001000"
+glue_job_max_capacity = 2

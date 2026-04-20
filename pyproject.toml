@@ -1,0 +1,63 @@
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311"]
+extend-exclude = '''
+/(
+    \.venv
+  | build
+  | dist
+  | terraform
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip = [".venv", "build", "dist", "terraform"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["terraform", "build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = [
+    "E402",  # module level import not at top of file (Glue jobs use top-level awsglue imports)
+    "E501",  # line too long (handled by black)
+    "F401",  # unused imports (Glue star imports are common)
+    "F403",  # star imports (Glue jobs rely on these)
+    "F405",  # undefined-names via star imports
+    "B008",  # function calls in argument defaults (common in AWS SDK clients)
+    "UP",    # upgrade rules (keep compatible with Glue runtime)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B", "E"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-ra -q"
+pythonpath = ["."]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["lambda", "glue_jobs"]
+omit = [
+    "tests/*",
+    "glue_jobs/consolidate_data.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_configs = true
+no_implicit_optional = false
+check_untyped_defs = false
